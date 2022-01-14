@@ -5,17 +5,17 @@
             <span class="font-semibold text-3xl ">Login</span>
         </div>
       <!-- Form -->
-      <form @submit="onSubmit" class="flex flex-col justify-start space-y-6">
+      <form @submit.prevent="onSubmit" class="flex flex-col justify-start space-y-6">
         <div class="row">
           <label class="flex flex-col" for="UserName">
             <span class="font-semibold">User Name</span>
-            <input id="UserName" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="UserName" autocomplete="username">
+            <input id="UserName" v-model="userName" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="UserName" autocomplete="username">
           </label>
         </div>
           <div class="row">
           <label class="flex flex-col" for="PassWord">
             <span class="font-semibold">PassWord</span>
-            <input id="Password" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="PassWord" autocomplete="current-password">
+            <input id="Password" v-model="passWord" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="password" placeholder="PassWord" autocomplete="current-password">
           </label>
         </div>
         <div class="row">
@@ -36,12 +36,38 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  setup() {
-    function onSubmit(){}
-    return{
-      onSubmit
+  name: 'Register',
+  data() {
+    return {
+      userName: '',
+      passWord: '',
     }
   },
+  methods:{
+    onSubmit() {
+      const data = {
+        userName: this.userName,
+        passWord: this.passWord,
+      };
+  
+      if( data.userName == '' ){
+        alert('UseName Can not be empty');
+        return data;
+      }if( data.passWord == '' ){
+        alert('PassWord Can not be empty');
+        return data;
+      }
+
+      axios.post('http://localhost:3000/user/login', data)
+      .then(res => {
+        alert('Login Success!')
+         console.log(res)
+      })
+      .catch(err => {console.log(err)})
+    }
+  }
 }
 </script>

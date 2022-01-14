@@ -5,27 +5,27 @@
             <span class="font-semibold text-3xl ">Register</span>
         </div>
       <!-- Form -->
-      <form @submit="onSubmit" class="flex flex-col justify-start space-y-6">
+      <form @submit.prevent="onSubmit" class="flex flex-col justify-start space-y-6">
         <div class="row">
           <label class="flex flex-col" for="UserName">
             <span class="font-semibold">User Name</span>
-            <input id="UserName" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="UserName" autocomplete="username">
+            <input id="UserName" v-model="userName" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="UserName" autocomplete="username">
           </label>
         </div>
           <div class="row">
           <label class="flex flex-col" for="PassWord">
             <span class="font-semibold">PassWord</span>
-            <input id="Password" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="PassWord" autocomplete="current-password">
+            <input id="Password" v-model="passWord" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="password" placeholder="PassWord" autocomplete="current-password">
           </label>
         </div>
           <div class="row">
           <label class="flex flex-col" for="email">
             <span class="font-semibold">email</span>
-            <input id="userName" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="text" placeholder="...@gmail.com" autocomplete="email">
+            <input id="email" v-model="email" class="px-4 py-3 rounded-lg border border-gray-100 mt-1" type="email" placeholder="...@gmail.com" autocomplete="email">
           </label>
         </div>
         <div class="row">
-          <button v-if="isPending" type="submit" class="py-3 text-center w-full bg-purple-500 text-white rounded-lg">
+          <button v-if="!isPending" type="submit" class="py-3 text-center w-full bg-purple-500 text-white rounded-lg">
             Sign Up
           </button>
           <button v-else type="submit" class="py-3 text-center w-full bg-gray-500 text-white rounded-lg cursor-not-allowed" disabled>
@@ -45,13 +45,43 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  setup() {
-    function onSubmit(){}
-    return{
-      isPending: true,
-      onSubmit
+  name: 'Register',
+  data() {
+    return {
+      userName: '',
+      passWord: '',
+      email: '',
     }
   },
+  methods:{
+    onSubmit() {
+      const data = {
+        userName: this.userName,
+        passWord: this.passWord,
+        email: this.email,
+      };
+  
+      if( data.userName == '' ){
+        alert('UseName Can not be empty');
+        return data;
+      }if( data.passWord == '' ){
+        alert('PassWord Can not be empty');
+        return data;
+      }if( data.email == '' ){
+         alert('Email Can not be empty');
+        return data;
+      }
+
+      axios.post('http://localhost:3000/user/create', data)
+      .then(res => {
+        alert('Create Success!')
+         console.log(res)
+      })
+      .catch(err => {console.log(err)})
+    }
+  }
 }
 </script>
